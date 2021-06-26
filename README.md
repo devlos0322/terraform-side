@@ -47,6 +47,7 @@ resource "aws_s3_bucket" "case_1_bucket_devlos" {
     }
 }
 ```
+
 Step 2) 실행
 ```sh
 terraform init
@@ -106,6 +107,63 @@ resource "aws_subnet" "public_subnet_3" {
 
 Step 2) 실행
 
+```sh
+terraform init
+terraform plan
+terraform apply
+terraform destroy
+```
+
+### 3.3. case2 provider, vpc, subnet * 3 생성
+하나의 VPC내에 subnet 3개 생성. cidr_blocke을 10.0.0.0/26로 설정하여 하나의 서브넷에 할당 가능한 IP 대역을 59개 생성 (2^(32-26), 예약 IP: 5)
+
+Step 1) 생성
+
+provider.tf
+```terraform
+provider "aws" {
+    region = "ap-northeast-2"
+}
+```
+
+vpc.tf
+```terraform
+resource "aws_vpc" "case3_main"{
+    cidr_block = "10.0.0.0/16"
+    tags = {
+        Name = "case3_main"
+    }
+}
+
+resource "aws_subnet" "case3_subnet_1" {
+    vpc_id = aws_vpc.case3_main.id
+    cidr_block = "10.0.0.0/26"
+    availability_zone = "ap-northeast-2a"
+    tags = {
+        Name = "case3_subnet_1"
+    }
+}
+
+resource "aws_subnet" "case3_subnet_2" {
+    vpc_id = aws_vpc.case3_main.id
+    cidr_block = "10.0.10.0/26"
+    availability_zone = "ap-northeast-2a"
+    tags = {
+        Name = "case3_subnet_2"
+    }
+}
+
+resource "aws_subnet" "case3_subnet_3" {
+    vpc_id = aws_vpc.case3_main.id
+    cidr_block = "10.0.20.0/26"
+    availability_zone = "ap-northeast-2a"
+    tags = {
+        Name = "case3_subnet_3"
+    }
+}
+```
+
+Step 2) 실행
 ```sh
 terraform init
 terraform plan

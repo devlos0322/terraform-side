@@ -37,7 +37,6 @@ resource "aws_s3_bucket" "case_1_bucket_devlos" {
 }
 ```
 Step 2) 실행
-
 ```sh
 terraform init
 terraform plan
@@ -45,4 +44,59 @@ terraform apply
 terraform destroy
 ```
 
+### 2.2. case2 provider, vpc, subnet * 3 생성
 
+Step 1) 생성
+
+provider.tf
+```terraform
+provider "aws" {
+    region = "ap-northeast-2"
+    version = "~>3.0"
+}
+```
+vpc.tf
+```terraform
+resource "aws_vpc" "main" {
+    cidr_block = "10.0.0.0/16"
+    tags = {
+        Name = "case_2_vpc_main"
+    }
+}
+
+resource "aws_subnet" "public_subnet_1" {
+    vpc_id = aws_vpc.main.id
+    cidr_block = "10.0.0.0/24"
+    availability_zone = "ap-northeast-2a"
+    tags = {
+        Name = "case_2_public_subnet_1"
+    }
+}
+
+resource "aws_subnet" "public_subnet_2" {
+    vpc_id = aws_vpc.main.id
+    cidr_block = "10.0.10.0/24"
+    availability_zone = "ap-northeast-2a"
+    tags = {
+        Name = "case_2_public_subnet_2"
+    }
+}
+
+resource "aws_subnet" "public_subnet_3" {
+    vpc_id = aws_vpc.main.id
+    cidr_block = "10.0.20.0/24"
+    availability_zone = "ap-northeast-2a"
+    tags = {
+        Name = "case_2_public_subnet_3"
+    }
+}
+```
+
+Step 2) 실행
+
+```sh
+terraform init
+terraform plan
+terraform apply
+terraform destroy
+```

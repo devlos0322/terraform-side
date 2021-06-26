@@ -199,3 +199,121 @@ terraform destroy 이후 aws console에서 VPC, 서브넷이 삭제 되지 않�
 
 </div>
 </details>
+
+### 3.4. Case 4 : provider, vpc, public subnet, private subnet, nat gateway, internet gateway, elastic IP
+
+VPC 내부에 외부와 통신이 가능한 public subnet 생성(Web server or API server 용도). private subnet 생성(데이터베이스 및 내부 로직). 인터넷 게이트웨이와 퍼블릭 서브넷을 연결하고, NAT Gateway를 public subnet에 배치한 다음 private subnet의 라우트 테이블과 연결하여 public subnet을 통해 외부와 통신이 가능하도록 네트워크 환경을 구성
+
+<details>
+<summary>Terraform Code</summary>
+<div markdown="1">
+
+Step 1) 생성
+
+provider.tf
+
+```terraform
+provider "aws" {
+    region = "ap-northeast-2"
+    version = "~>3.0"
+}
+```
+
+network.tf
+```terraform
+# vpc 설정
+resource "aws_vpc" "case4_vpc" {
+    cidr_block = "10.0.0.0/16"
+    tags = {
+        Name = "case4_vpc"
+    }
+}
+
+# elastic IP 생성
+resource "aws_eip" "case4_eip" {
+    vpc = true
+    lifecycle {
+      create_before_destroy = true
+    }
+}
+
+# public subnet 생성
+resource "aws_subnet" "case4_subnet_public" {
+    vpc_id = aws_vpc.case4_vpc.id
+    availability_zone = "ap-northeast-2a"
+    cidr_block = "10.0.0.0/24"
+    tags = {
+        Name = "case4_subnet_public"
+    }
+}
+
+# private subnet 생성
+resource "aws_subnet" "case4_subnet_private" {
+    vpc_id = aws_vpc.case4_vpc.id
+    availability_zone = "ap-northeast-2a"
+    cidr_block = "10.0.10.0/24"
+    tags = {
+        Name = "case4_subnet_private"
+    }
+}
+
+
+# IGW 생성
+resource "aws_internet_gateway" "case4_igw" {
+    vpc_id = aws_vpc.case4_vpc.id
+    tags = {
+        Name = "case4_igw"
+    }
+}
+
+# NAT GW 생성
+resource "aws_nat_gateway" "case4_nat_gw" {
+    allocation_id = aws_eip.case4_eip.id
+    subnet_id = aws_subnet.case4_subnet_public.id
+    tags = {
+        Name = "case4_nat_gw"
+    }
+}
+
+# public route table 생성
+resource "aws_route_table" "case4_route_public" {
+    vpc_id = aws_vpc.case4_vpc.id
+    tags = {
+        Name = "case4_route_public"
+    }
+}
+
+# public route table 관계 생성
+resource "aws_route_table_association" "case4_route_public_association" {
+    subnet_id = aws_subnet.case4_subnet_public.id
+    route_table_id = aws_route_table.case4_route_public.id
+}
+
+resource "aws_route" "case4_route_public" {
+    route_table_id = aws_route_table.case4_route_public.id
+    destination_cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.case4_igw.id
+}
+
+# private route table 생성
+resource "aws_route_table" "case4_route_private" {
+    vpc_id = aws_vpc.case4_vpc.id
+    tags = {
+        Name = "case4_route_private"
+    }
+}
+
+resource "aws_route_table_association" "case4_route_private_association" {
+    subnet_id = aws_subnet.case4_subnet_private.id
+    route_table_id = aws_route_table.case4_route_private.id
+}
+
+resource "aws_route" "case4_private_nat" {
+    route_table_id = aws_route_table.case4_route_private.id
+    destination_cidr_block = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.case4_nat_gw.id
+}
+```
+
+</div>
+</details>

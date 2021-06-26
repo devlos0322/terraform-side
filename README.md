@@ -14,6 +14,9 @@ apply : 테라폼 코드로 실제 인프라를 생성. plan과 같이 시뮬레
 
 ## 2. cases
 ### 2.1. case1 provider, s3 생성
+
+Step 1) 생성
+
 provider.tf
 ```terraform
 provider "aws" {
@@ -21,4 +24,25 @@ provider "aws" {
     version = "~>3.0"
 }
 ```
+
+s3.tf
+```terraform
+resource "aws_s3_bucket" "case_1_bucket_devlos" {
+    bucket = "case-1-bucket-devlos"
+
+    tags = {
+        Name = "devlos bucket"
+        Environment = "Dev"
+    }
+}
+```
+Step 2) 실행
+
+```sh
+terraform init
+terraform plan
+terraform apply
+terraform destroy
+```
+
 

@@ -12,8 +12,19 @@ plan : 테라폼 코드 시뮬레이션. 하지만 실제 인프라 환경정보
 
 apply : 테라폼 코드로 실제 인프라를 생성. plan과 같이 시뮬레이션 우선 실행 후, yes 입력시 생성됨
 
-## 2. cases
-### 2.1. case1 provider, s3 생성
+## 2. 배경지식
+
+### 2.1. VPC 핵심 구성요소
+* Subnet: VPC의 IP 주소 범위
+* Routing Table: 네트워크 트래픽을 전달할 위치를 결정하는데 사용되는 라우팅이라는 규칙의 집합
+* IGW(Internet Gateway): VPC와 리소스간 통신을 활성화 하기위한 Gateway
+* NAT GATEWAY: 네트워크 주소 변환을 통해 프라이빗 서브넷에서 인터넷 또는 기타 AWS 서비스에 연결이 가능한 Gateway
+* Security Group: 가상 방화벽, 포트 관리
+* VPC Endpoint: PrivateLink 구동 지원(?). AWS 서비스 및 VPC 엔드포인트 서비스에 VPC를 비공개로 연결. 서비스간 다이렉트 연결
+### 2.2. VPC 할당 가능 대역
+네트워크 사설망 대역: 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16
+## 3. cases
+### 3.1. case1 provider, s3 생성
 
 Step 1) 생성
 
@@ -44,7 +55,8 @@ terraform apply
 terraform destroy
 ```
 
-### 2.2. case2 provider, vpc, subnet * 3 생성
+### 3.2. case2 provider, vpc, subnet * 3 생성
+하나의 VPC내에 subnet 3개 생성. cidr_blocke을 10.0.0.0/24로 설정하여 하나의 서브넷에 할당 가능한 IP 대역을 251개 생성 (2^(32-24), 예약 IP: 5)
 
 Step 1) 생성
 

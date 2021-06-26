@@ -170,3 +170,11 @@ terraform plan
 terraform apply
 terraform destroy
 ```
+
+Issue
+
+terraform destroy 이후 aws console에서 VPC, 서브넷이 삭제 되지 않는 상황 발생
+* terraform import aws_vpc.case3_main VPCID 를 이용하여 인프라의 상태와 tfstate 파일을 동기화 \
+  VPCID는 aws consloe에서 확인
+* subnet도 다음과 같은 형태로 동기화
+* terraform destroy를 이용하여 삭제 후 실제 인프라 상황을 확인하여 정상적으로 생성한 인프라가 삭제 되었음을 확인

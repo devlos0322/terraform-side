@@ -24,7 +24,7 @@ apply : 테라폼 코드로 실제 인프라를 생성. plan과 같이 시뮬레
 ### 2.2. VPC 할당 가능 대역
 네트워크 사설망 대역: 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16
 ## 3. cases
-### 3.1. case1 provider, s3 생성
+### 3.1. Case 1 : provider, s3 생성
 
 <details>
 <summary>Terraform Code</summary>
@@ -63,7 +63,7 @@ terraform destroy
 </div>
 </details>
 
-### 3.2. case2 provider, vpc, subnet * 3 생성
+### 3.2. Case 2 : provider, vpc, subnet * 3 생성 (대역: 251)
 하나의 VPC내에 subnet 3개 생성. cidr_blocke을 10.0.0.0/24로 설정하여 하나의 서브넷에 할당 가능한 IP 대역을 251개 생성 (2^(32-24), 예약 IP: 5)
 
 <details>
@@ -128,7 +128,7 @@ terraform destroy
 </div>
 </details>
 
-### 3.3. case2 provider, vpc, subnet * 3 생성
+### 3.3. Case 3 : provider, vpc, subnet * 3 생성 (대역: 59)
 하나의 VPC내에 subnet 3개 생성. cidr_blocke을 10.0.0.0/26로 설정하여 하나의 서브넷에 할당 가능한 IP 대역을 59개 생성 (2^(32-26), 예약 IP: 5)
 
 <details>

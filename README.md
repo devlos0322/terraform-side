@@ -315,5 +315,13 @@ resource "aws_route" "case4_private_nat" {
 }
 ```
 
+Step 2) 실행
+```sh
+terraform init
+terraform plan
+terraform apply
+terraform destroy
+```
+
 </div>
 </details>

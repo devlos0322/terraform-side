@@ -26,6 +26,10 @@ apply : 테라폼 코드로 실제 인프라를 생성. plan과 같이 시뮬레
 ## 3. cases
 ### 3.1. case1 provider, s3 생성
 
+<details>
+<summary>Terraform Code</summary>
+<div markdown="1">
+
 Step 1) 생성
 
 provider.tf
@@ -56,8 +60,15 @@ terraform apply
 terraform destroy
 ```
 
+</div>
+</details>
+
 ### 3.2. case2 provider, vpc, subnet * 3 생성
 하나의 VPC내에 subnet 3개 생성. cidr_blocke을 10.0.0.0/24로 설정하여 하나의 서브넷에 할당 가능한 IP 대역을 251개 생성 (2^(32-24), 예약 IP: 5)
+
+<details>
+<summary>Terraform Code</summary>
+<div markdown="1">
 
 Step 1) 생성
 
@@ -114,8 +125,15 @@ terraform apply
 terraform destroy
 ```
 
+</div>
+</details>
+
 ### 3.3. case2 provider, vpc, subnet * 3 생성
 하나의 VPC내에 subnet 3개 생성. cidr_blocke을 10.0.0.0/26로 설정하여 하나의 서브넷에 할당 가능한 IP 대역을 59개 생성 (2^(32-26), 예약 IP: 5)
+
+<details>
+<summary>Terraform Code</summary>
+<div markdown="1">
 
 Step 1) 생성
 
@@ -178,3 +196,6 @@ terraform destroy 이후 aws console에서 VPC, 서브넷이 삭제 되지 않�
   VPCID는 aws consloe에서 확인
 * subnet도 다음과 같은 형태로 동기화
 * terraform destroy를 이용하여 삭제 후 실제 인프라 상황을 확인하여 정상적으로 생성한 인프라가 삭제 되었음을 확인
+
+</div>
+</details>

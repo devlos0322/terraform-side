@@ -325,3 +325,39 @@ terraform destroy
 
 </div>
 </details>
+
+### 3.5. Case 5 : provider, IAM user
+
+IAM(Identity and Access Management)에 Devlos_tester라는 계정을 추가하기
+
+<details>
+<summary>Terraform Code</summary>
+<div markdown="1">
+
+Step 1) 생성
+
+provider.tf
+```terraform
+provider "aws" {
+    region = "ap-northeast-2"
+    version = "~>3.0"
+}
+```
+
+user-devlos-tester.tf
+```terraform
+resource "aws_iam_user" "devlos-tester" {
+    name = "devlos_tester"
+}
+```
+
+Step 2) 실행
+```sh
+terraform init
+terraform plan
+terraform apply
+terraform destroy
+```
+
+</div>
+</details>

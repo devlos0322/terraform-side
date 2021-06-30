@@ -361,3 +361,54 @@ terraform destroy
 
 </div>
 </details>
+
+### 3.6. Case 6 : provider, IAM user, IAM group
+
+IAM(Identity and Access Management)에 Devlos_tester라는 계정을 추가하고, devops_group이라는 group을 생성한 다음, 그룹에 계정을 할당하기
+
+<details>
+<summary>Terraform Code</summary>
+<div markdown="1">
+
+Step 1) 생성
+
+provider.tf
+```terraform
+provider "aws" {
+    region = "ap-northeast-2"
+    version = "~>3.0"
+}
+```
+
+user-devlos-tester.tf
+```terraform
+resource "aws_iam_user" "devlos-tester" {
+    name = "devlos_tester"
+}
+```
+
+devops-group.tf
+```terraform
+resource "aws_iam_group" "devops_group" {
+    name = "devops_group"
+}
+
+resource "aws_iam_group_membership" "devops" {
+    name = aws_iam_group.devops_group.name
+    users = [
+        aws_iam_user.devlos_tester.name
+    ]
+    group = aws_iam_group.devops_group.name
+}
+```
+
+Step 2) 실행
+```sh
+terraform init
+terraform plan
+terraform apply
+terraform destroy
+```
+
+</div>
+</details>
